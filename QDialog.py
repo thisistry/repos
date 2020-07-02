@@ -11,3 +11,5 @@ class MainForm(QDialog):
         else:
             evnt.ignore()
             self.setWindowState(QtCore.Qt.WindowMinimized)
+QObject::connect: Cannot queue arguments of type 'QTextCursor'
+(Make sure 'QTextCursor' is registered using qRegisterMetaType().)
