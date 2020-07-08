@@ -13,3 +13,9 @@ class MainForm(QDialog):
             self.setWindowState(QtCore.Qt.WindowMinimized)
 QObject::connect: Cannot queue arguments of type 'QTextCursor'
 (Make sure 'QTextCursor' is registered using qRegisterMetaType().)
+
+
+
+
+"./eclipse --launcher.suppressErrors -nosplash -data " + l1_Path + \
+                " -application org.eclipse.cdt.managedbuilder.core.headlessbuild -import " + path_import + " -build Project/Debug" + " -Ea PATH=" + icc
