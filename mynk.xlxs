@@ -1,0 +1,40 @@
+AT Commands - Passing	AT Commands - Error	AT Commands - Stuck	
+AT+CMEE=1	AT+CGATT=1	AT+CGPADDR=5,7	
+AT+CMEE=2	AT+CGACT=1,6	AT+CGACT=0,6	
+AT+CMEE?	AT+CGCONTRDP=6	AT+CFUN=0	
+AT+CMEE=?		START UE (UE state queue)	
+AT+CEREG=2		STOP UE (UE state queue)	
+AT+CEREG?		AT+CFUN=1	
+AT+CEREG=?		AT+CFUN=4	
+AT+CGEREP=1,0		AT+CLAC	
+AT+CGATT=0			
+AT+CGATT?			
+AT+CGATT=?			
+AT+COPS=0			
+AT+COPS=4,2,"00101"			
+AT+COPS?			
+AT+COPS=?			
+AT+CGDCONT=6,"IP","internet"			
+AT+CGDCONT?			
+AT+CGDCONT=?			
+AT+CGDSCONT=7,5			
+AT+CGDSCONT?			
+AT+CGDSCONT=?			
+AT+CGEQOS=7,7,128,128,384,384			
+AT+CGEQOS?			
+AT+CGEQOS=?			
+AT+CGTFT=7,1,…….			
+AT+CGTFT?			
+AT+CGTFT=?			
+AT+CGACT?			
+AT+CGACT=?			
+AT+CGCONTRDP=?			
+AT+CGPADDR=?			
+AT+CGEREP=1,1			
+AT+CGEREP?			
+AT+CGEREP=?			
+AT+CFUN=129			
+AT+COPS=0			
+AT+CFUN?			
+AT+CFUN=?			
+Passing: 38	Error: 3	Stuck: 8	Total: 49
