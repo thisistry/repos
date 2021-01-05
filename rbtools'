@@ -1,2 +1,56 @@
 rest-api/service/api/v1/projects/11873
 url http://reviews.example.com/api/review-requests/8/reviews/ -H "Accept: application/json"
+repos = root.get_repositories()
+if repos.num_items < 1:
+    raise Exception('No valid repositories.')
+
+repository = repos[0].id
+review_request = root.get_review_requests().create(repository=repository)
+**********************************************************************************
+
+f = open("path/to/diff.txt", mode="r")
+diff_contents = f.read()
+f.close()
+
+review_request.get_diffs().upload_diff(diff_contents)
+
+**************************************************************
+f = open("path/to/attachment", mode="r")
+attachment_contents = f.read()
+f.close()
+**************************************************************
+review_request.get_file_attachments().upload_attachment(
+    "attachment",
+    attachment_contents,
+    caption="An attachment.")
+    
+    *****************************************************************
+    draft = review_request.get_draft()
+draft = draft.update(
+    summary='API tutorial request',
+    description='This request was created in the API tutorial.')
+    
+    
+    *****************************************************************
+    user = root.get_session().get_user()
+draft = draft.update(target_people=user.username)
+
+******************************************************************
+draft.update(public=True)
+
+******************************************************************
+
+review = review_request.get_reviews().create()
+
+
+***********************************************************
+filediff_id = review.get_diffs()[0].get_files()[0].id
+review.get_diff_comments().create(
+    filediff_id=1,
+    first_line=1,
+    num_lines=1,
+    text='This is a diff comment!')
+    
+    
+    *******************************************************
+    review.update(body_top='Awesome patch!', public=True)
