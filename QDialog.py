@@ -19,3 +19,6 @@ QObject::connect: Cannot queue arguments of type 'QTextCursor'
 
 "./eclipse --launcher.suppressErrors -nosplash -data " + l1_Path + \
                 " -application org.eclipse.cdt.managedbuilder.core.headlessbuild -import " + path_import + " -build Project/Debug" + " -Ea PATH=" + icc
+
+
+sudo ssh-keygen -f "/root/.ssh/known_hosts" -R 10.10.6.16
