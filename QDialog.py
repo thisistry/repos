@@ -23,9 +23,6 @@ QObject::connect: Cannot queue arguments of type 'QTextCursor'
 
 sudo ssh-keygen -f "/root/.ssh/known_hosts" -R 10.10.6.16
 
-
-import subprocess
-
-def copy2clip(txt):
-    cmd='echo '+txt.strip()+'|clip'
-    return subprocess.check_call(cmd, shell=True)
+  cb = QtGui.QApplication.clipboard()
+    cb.clear(mode=cb.Clipboard )
+    cb.setText("Clipboard Text", mode=cb.Clipboard)
