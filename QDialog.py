@@ -26,3 +26,11 @@ sudo ssh-keygen -f "/root/.ssh/known_hosts" -R 10.10.6.16
   cb = QtGui.QApplication.clipboard()
     cb.clear(mode=cb.Clipboard )
     cb.setText("Clipboard Text", mode=cb.Clipboard)
+    
+    
+    
+    import multiprocessing
+proc = multiprocessing.Process(target=your_proc_function, args=())
+proc.start()
+# Terminate the process
+proc.terminate()  # sends a SIGTER
