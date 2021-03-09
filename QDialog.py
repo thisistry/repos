@@ -34,3 +34,11 @@ proc = multiprocessing.Process(target=your_proc_function, args=())
 proc.start()
 # Terminate the process
 proc.terminate()  # sends a SIGTER
+
+[(t['id'], t['name']) for t in transitions]
+
+# Resolve the issue and assign it to 'pm_user' in one step
+jira.transition_issue(issue, '5', assignee={'name': 'pm_user'}, resolution={'id': '3'})
+
+# The above line is equivalent to:
+jira.transition_issue(issue, '5', fields={'assignee':{'name': 'pm_user'}, 'resolution':{'id': '3'}})
