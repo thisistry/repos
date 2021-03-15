@@ -42,3 +42,10 @@ jira.transition_issue(issue, '5', assignee={'name': 'pm_user'}, resolution={'id'
 
 # The above line is equivalent to:
 jira.transition_issue(issue, '5', fields={'assignee':{'name': 'pm_user'}, 'resolution':{'id': '3'}})
+
+
+
+curl -u <EMAIL-ADDRESS>:<API-TOKEN> -X GET "https://<NAME>.atlassian.net/rest/api/3/issue/<ISSUE_KEY>/transitions"
+    
+    
+    curl -D- -u <EMAIL-ADDRESS>:<API-TOKEN> --data '{"transition": {"id": "21"}}' -H 'Accept: application/json' -H 'Content-Type: application/json' -X POST "https://<NAME>.atlassian.net/rest/api/3/issue/<ISSUE_KEY>/transitions"
