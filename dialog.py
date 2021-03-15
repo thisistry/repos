@@ -81,3 +81,15 @@ if __name__=="__main__":
     w.show()
 
     sys.exit(app.exec_())
+
+    
+    
+    
+    threadCount = QThreadPool.globalInstance().maxThreadCount()
+        self.label.setText(f"Running {threadCount} Threads")
+        pool = QThreadPool.globalInstance()
+        for i in range(threadCount):
+            # 2. Instantiate the subclass of QRunnable
+            runnable = Runnable(i)
+            # 3. Call start()
+            pool.start(runnable)
