@@ -82,3 +82,7 @@ app = QtGui.QApplication(sys.argv)
 qb = TerminalViewer()
 qb.show()
 sys.exit(app.exec_())
+
+
+
+*** Error in `python': free(): invalid next size (fast): 0x0000000001f0c640 ***
