@@ -49,3 +49,8 @@ curl -u <EMAIL-ADDRESS>:<API-TOKEN> -X GET "https://<NAME>.atlassian.net/rest/ap
     
     
     curl -D- -u <EMAIL-ADDRESS>:<API-TOKEN> --data '{"transition": {"id": "21"}}' -H 'Accept: application/json' -H 'Content-Type: application/json' -X POST "https://<NAME>.atlassian.net/rest/api/3/issue/<ISSUE_KEY>/transitions"
+
+        
+        
+        150ac0000000000060e7dbf7070000000100000074e6dbf70300000002000000e0e3dbf70400000003000000c4e7dbf70b00000004000000a0e6dbf702000000050000003ce8dbf71c0000000600000040e4dbf709000000070000000ce4dbf7020000000800000074e4dbf70100000009000000a0e4dbf7040000000a000000fce4dbf7080000000b0000002ce5dbf7080000000c0000005ce5dbf7080000000d000000f8e7dbf70b0000000e000000b8e8dbf70e0000000f0000002ce9dbf712000000
+        
