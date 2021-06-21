@@ -36,6 +36,12 @@ class Dialog_01(QtGui.QMainWindow):
         self.toolbutton.setPopupMode(QtGui.QToolButton.InstantPopup)
         myBoxLayout.addWidget(self.toolbutton)
         myBoxLayout.addWidget(self.ComboBox)
+    def center(self):
+      frameGm = self.frameGeometry()
+      screen = QtGui.QApplication.desktop().screenNumber(QtGui.QApplication.desktop().cursor().pos())
+      centerPoint = QtGui.QApplication.desktop().screenGeometry(screen).center()
+      frameGm.moveCenter(centerPoint)
+      self.move(frameGm.topLeft())
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
