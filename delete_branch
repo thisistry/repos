@@ -1,0 +1,3 @@
+
+#List out branch by author name
+git for-each-ref --format=' %(authorname) %09 %(refname)' --sort=authorname 
