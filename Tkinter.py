@@ -31,3 +31,14 @@ b2.pack()
 T.insert(tk.END, Quote) 
 
 tk.mainloop() 
+
+CT-2354 : [TS.31.121][SIM_CT][ND_Testing][CATNB][FAIL][TC.7.1.4][FPLMN expected and received record mismatch], CT-2354, CT-2362 : [TS.31.121][SIM_CT][ND_Testing][CATNB][FAIL][TC.7.1.4][FPLMN expected and received record mismatch], [TS.36.523][CAT-NB ASIC A0][FAIL][TC.22.5.1][Authentication failure message is not triggered with the EMM cause 21]
+
+Source      : Alif Semiconductor
+JIRA ID     : CT-2354, CT-2362
+REVIEW ID   : 3417
+Type        : Defect Fix
+Disposition : Local
+Description : [TS.31.121][SIM_CT][ND_Testing][CATNB][FAIL][TC.7.1.4][FPLMN expected and received record mismatch], [TS.36.523][CAT-NB ASIC A0][FAIL][TC.22.5.1][Authentication failure message is not triggered with the EMM cause 21]
+
+Reviewed-by : Jagdeep,Dushyantha
