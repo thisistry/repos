@@ -1,0 +1,21 @@
+curl -D- -u fred:fred -X POST --data {see below} -H "Content-Type: application/json" http://kelpie9:8081/rest/api/2/issue/QA-31/comment
+
+
+example input data
+
+Copy
+{
+    "body": "This is a comment regarding the quality of the response."
+}
+
+
+
+
+f = open("path/to/attachment", mode="r")
+attachment_contents = f.read()
+f.close()
+
+review_request.get_file_attachments().upload_attachment(
+    "attachment",
+    attachment_contents,
+    caption="An attachment.")
