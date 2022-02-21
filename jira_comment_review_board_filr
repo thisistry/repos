@@ -19,3 +19,16 @@ review_request.get_file_attachments().upload_attachment(
     "attachment",
     attachment_contents,
     caption="An attachment.")
+
+
+import sys
+from rbtools.api.client import RBClient
+
+
+if __name__ == '__main__':
+    client = RBClient('http://reviewboard/')
+    root = client.get_root()
+
+    review = root.get_review_request(review_request_id=sys.argv[1])
+    for reviewer in review.target_people:
+        print '{}, {}'.format(reviewer.title, reviewer.href)
