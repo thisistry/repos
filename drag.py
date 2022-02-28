@@ -1,119 +1,106 @@
-from PyQt5.QtWidgets import QApplication, QHBoxLayout, QWidget, QLabel, QMainWindow, QVBoxLayout
-from PyQt5.QtCore import Qt, QMimeData, pyqtSignal
-from PyQt5.QtGui import QDrag, QPixmap
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import sys
+from PyQt4 import QtGui, QtCore
 
 
-class DragItem(QLabel):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.setContentsMargins(25, 5, 25, 5)
-        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.setStyleSheet("border: 1px solid black;")
-        # Store data separately from display label, but use label for default.
-        self.data = self.text()
-
-    def set_data(self, data):
-        self.data = data
-
+class Button(QtGui.QPushButton):
     def mouseMoveEvent(self, e):
+        if e.buttons() != QtCore.Qt.RightButton:
+            return
 
-        if e.buttons() == Qt.LeftButton:
-            drag = QDrag(self)
-            mime = QMimeData()
-            drag.setMimeData(mime)
+        # write the relative cursor position to mime data
+        mimeData = QtCore.QMimeData()
+        # simple string with 'x,y'
+        mimeData.setText('%d,%d' % (e.x(), e.y()))
 
-            pixmap = QPixmap(self.size())
-            self.render(pixmap)
-            drag.setPixmap(pixmap)
+        # let's make it fancy. we'll show a "ghost" of the button as we drag
+        # grab the button to a pixmap
+        pixmap = QtGui.QPixmap.grabWidget(self)
 
-            drag.exec_(Qt.MoveAction)
+        # below makes the pixmap half transparent
+        painter = QtGui.QPainter(pixmap)
+        painter.setCompositionMode(painter.CompositionMode_DestinationIn)
+        painter.fillRect(pixmap.rect(), QtGui.QColor(0, 0, 0, 127))
+        painter.end()
+
+        # make a QDrag
+        drag = QtGui.QDrag(self)
+        # put our MimeData
+        drag.setMimeData(mimeData)
+        # set its Pixmap
+        drag.setPixmap(pixmap)
+        # shift the Pixmap so that it coincides with the cursor position
+        drag.setHotSpot(e.pos())
+
+        # start the drag operation
+        # exec_ will return the accepted action from dropEvent
+        if drag.exec_(QtCore.Qt.CopyAction | QtCore.Qt.MoveAction) == QtCore.Qt.MoveAction:
+            print 'moved'
+        else:
+            print 'copied'
 
 
-class DragWidget(QWidget):
-    """
-    Generic list sorting handler.
-    """
+    def mousePressEvent(self, e):
+        QtGui.QPushButton.mousePressEvent(self, e)
+        if e.button() == QtCore.Qt.LeftButton:
+            print 'press'
 
-    orderChanged = pyqtSignal(list)
 
-    def __init__(self, *args, orientation=Qt.Orientation.Vertical, **kwargs):
-        super().__init__()
+
+class Example(QtGui.QWidget):
+    def __init__(self):
+        super(Example, self).__init__()
+        self.initUI()
+
+
+    def initUI(self):
         self.setAcceptDrops(True)
 
-        # Store the orientation for drag checks later.
-        self.orientation = orientation
+        button = Button('Button', self)
+        button.move(100, 65)
 
-        if self.orientation == Qt.Orientation.Vertical:
-            self.blayout = QVBoxLayout()
-        else:
-            self.blayout = QHBoxLayout()
+        self.buttons = [button]
 
-        self.setLayout(self.blayout)
+        self.setWindowTitle('Copy or Move')
+        self.setGeometry(300, 300, 280, 150)
+
 
     def dragEnterEvent(self, e):
         e.accept()
 
+
     def dropEvent(self, e):
-        pos = e.pos()
-        widget = e.source()
+        # get the relative position from the mime data
+        mime = e.mimeData().text()
+        x, y = map(int, mime.split(','))
 
-        for n in range(self.blayout.count()):
-            # Get the widget at each index in turn.
-            w = self.blayout.itemAt(n).widget()
-            if self.orientation == Qt.Orientation.Vertical:
-                # Drag drop vertically.
-                drop_here = pos.y() < w.y() + w.size().height() // 2
-            else:
-                # Drag drop horizontally.
-                drop_here = pos.x() < w.x() + w.size().width() // 2
-
-            if drop_here:
-                # We didn't drag past this widget.
-                # insert to the left of it.
-                self.blayout.insertWidget(n-1, widget)
-                self.orderChanged.emit(self.get_item_data())
-                break
-
+        if e.keyboardModifiers() & QtCore.Qt.ShiftModifier:
+            # copy
+            # so create a new button
+            button = Button('Button', self)
+            # move it to the position adjusted with the cursor position at drag
+            button.move(e.pos()-QtCore.QPoint(x, y))
+            # show it
+            button.show()
+            # store it
+            self.buttons.append(button)
+            # set the drop action as Copy
+            e.setDropAction(QtCore.Qt.CopyAction)
+        else:
+            # move
+            # so move the dragged button (i.e. event.source())
+            e.source().move(e.pos()-QtCore.QPoint(x, y))
+            # set the drop action as Move
+            e.setDropAction(QtCore.Qt.MoveAction)
+        # tell the QDrag we accepted it
         e.accept()
 
-    def add_item(self, item):
-        self.blayout.addWidget(item)
-
-    def get_item_data(self):
-        data = []
-        for n in range(self.blayout.count()):
-            # Get the widget at each index in turn.
-            w = self.blayout.itemAt(n).widget()
-            data.append(w.data)
-        return data
 
 
-class MainWindow(QMainWindow):
-
-    def __init__(self):
-        super().__init__()
-        self.drag = DragWidget(orientation=Qt.Orientation.Vertical)
-        for n, l in enumerate(['A', 'B', 'C', 'D']):
-            item = DragItem(l)
-            item.set_data(n)  # Store the data.
-            self.drag.add_item(item)
-
-        # Print out the changed order.
-        self.drag.orderChanged.connect(print)
-
-        container = QWidget()
-        layout = QVBoxLayout()
-        layout.addStretch(1)
-        layout.addWidget(self.drag)
-        layout.addStretch(1)
-        container.setLayout(layout)
-
-        self.setCentralWidget(container)
-
-
-app = QApplication([])
-w = MainWindow()
-w.show()
-
-app.exec_()
+if __name__ == '__main__':
+    app = QtGui.QApplication(sys.argv)
+    ex = Example()
+    ex.show()
+    app.exec_()  
