@@ -1,106 +1,96 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
 import sys
-from PyQt4 import QtGui, QtCore
+from PyQt4.QtGui import *
 
+class TableWidgetDragRows(QTableWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-class Button(QtGui.QPushButton):
-    def mouseMoveEvent(self, e):
-        if e.buttons() != QtCore.Qt.RightButton:
-            return
-
-        # write the relative cursor position to mime data
-        mimeData = QtCore.QMimeData()
-        # simple string with 'x,y'
-        mimeData.setText('%d,%d' % (e.x(), e.y()))
-
-        # let's make it fancy. we'll show a "ghost" of the button as we drag
-        # grab the button to a pixmap
-        pixmap = QtGui.QPixmap.grabWidget(self)
-
-        # below makes the pixmap half transparent
-        painter = QtGui.QPainter(pixmap)
-        painter.setCompositionMode(painter.CompositionMode_DestinationIn)
-        painter.fillRect(pixmap.rect(), QtGui.QColor(0, 0, 0, 127))
-        painter.end()
-
-        # make a QDrag
-        drag = QtGui.QDrag(self)
-        # put our MimeData
-        drag.setMimeData(mimeData)
-        # set its Pixmap
-        drag.setPixmap(pixmap)
-        # shift the Pixmap so that it coincides with the cursor position
-        drag.setHotSpot(e.pos())
-
-        # start the drag operation
-        # exec_ will return the accepted action from dropEvent
-        if drag.exec_(QtCore.Qt.CopyAction | QtCore.Qt.MoveAction) == QtCore.Qt.MoveAction:
-            print 'moved'
-        else:
-            print 'copied'
-
-
-    def mousePressEvent(self, e):
-        QtGui.QPushButton.mousePressEvent(self, e)
-        if e.button() == QtCore.Qt.LeftButton:
-            print 'press'
-
-
-
-class Example(QtGui.QWidget):
-    def __init__(self):
-        super(Example, self).__init__()
-        self.initUI()
-
-
-    def initUI(self):
+        self.setDragEnabled(True)
         self.setAcceptDrops(True)
+        self.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.setDragDropOverwriteMode(False)
+        # self.setSelectionMode(QAbstractItemView.SingleSelection)
 
-        button = Button('Button', self)
-        button.move(100, 65)
+        self.last_drop_row = None
 
-        self.buttons = [button]
-
-        self.setWindowTitle('Copy or Move')
-        self.setGeometry(300, 300, 280, 150)
-
-
-    def dragEnterEvent(self, e):
-        e.accept()
+    # Override this method to get the correct row index for insertion
+    def dropMimeData(self, row, col, mimeData, action):
+        self.last_drop_row = row
+        return True
 
 
-    def dropEvent(self, e):
-        # get the relative position from the mime data
-        mime = e.mimeData().text()
-        x, y = map(int, mime.split(','))
+    def dropEvent(self, event):
+        # The QTableWidget from which selected rows will be moved
+        sender = event.source()
 
-        if e.keyboardModifiers() & QtCore.Qt.ShiftModifier:
-            # copy
-            # so create a new button
-            button = Button('Button', self)
-            # move it to the position adjusted with the cursor position at drag
-            button.move(e.pos()-QtCore.QPoint(x, y))
-            # show it
-            button.show()
-            # store it
-            self.buttons.append(button)
-            # set the drop action as Copy
-            e.setDropAction(QtCore.Qt.CopyAction)
-        else:
-            # move
-            # so move the dragged button (i.e. event.source())
-            e.source().move(e.pos()-QtCore.QPoint(x, y))
-            # set the drop action as Move
-            e.setDropAction(QtCore.Qt.MoveAction)
-        # tell the QDrag we accepted it
-        e.accept()
+        # Default dropEvent method fires dropMimeData with appropriate parameters (we're interested in the row index).
+        super().dropEvent(event)
+        # Now we know where to insert selected row(s)
+        dropRow = self.last_drop_row
 
+        selectedRows = sender.getselectedRowsFast()
+
+        # Allocate space for transfer
+        for _ in selectedRows:
+            self.insertRow(dropRow)
+
+        # if sender == receiver (self), after creating new empty rows selected rows might change their locations
+        sel_rows_offsets = [0 if self != sender or srow < dropRow else len(selectedRows) for srow in selectedRows]
+        selectedRows = [row + offset for row, offset in zip(selectedRows, sel_rows_offsets)]
+
+        # copy content of selected rows into empty ones
+        for i, srow in enumerate(selectedRows):
+            for j in range(self.columnCount()):
+                item = sender.item(srow, j)
+                if item:
+                    source = QTableWidgetItem(item)
+                    self.setItem(dropRow + i, j, source)
+
+        # delete selected rows
+        for srow in reversed(selectedRows):
+            sender.removeRow(srow)
+
+        event.accept()
+
+
+    def getselectedRowsFast(self):
+        selectedRows = []
+        for item in self.selectedItems():
+            if item.row() not in selectedRows:
+                selectedRows.append(item.row())
+        selectedRows.sort()
+        return selectedRows
+
+
+class Window(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        layout = QHBoxLayout()
+        self.setLayout(layout)
+
+        self.table_widgets = []
+        for _ in range(3):
+            tw = TableWidgetDragRows()
+            tw.setColumnCount(2)
+            tw.setHorizontalHeaderLabels(['Colour', 'Model'])
+
+            self.table_widgets.append(tw)
+            layout.addWidget(tw)
+
+        filled_widget = self.table_widgets[0]
+        items = [('Red', 'Toyota'), ('Blue', 'RV'), ('Green', 'Beetle')]
+        for i, (colour, model) in enumerate(items):
+            c = QTableWidgetItem(colour)
+            m = QTableWidgetItem(model)
+
+            filled_widget.insertRow(filled_widget.rowCount())
+            filled_widget.setItem(i, 0, c)
+            filled_widget.setItem(i, 1, m)
 
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
-    ex = Example()
-    ex.show()
-    app.exec_()  
+    app = QApplication(sys.argv)
+    window = Window()
+    window.show()
+    sys.exit(app.exec_())
