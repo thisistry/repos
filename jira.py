@@ -29,3 +29,20 @@ while True:
         print 'IssueType=',issue.fields.issuetype.name
         print 'Status=',issue.fields.status.name
         print 'Summary=',issue.fields.summary
+
+        
+        
+        from jira import JIRA    
+
+# Server Authentication
+username = "XXXXXX"
+password = "XXXXXX"
+
+jira = JIRA(options, basic_auth=(str(username), str(password)))
+
+# Get instance of the ticket
+issue = jira.issue('PROJ-1')
+
+# Upload the file
+with open('/some/path/attachment.txt', 'rb') as f:
+    jira.add_attachment(issue=issue, attachment=f)
