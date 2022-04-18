@@ -46,3 +46,9 @@ issue = jira.issue('PROJ-1')
 # Upload the file
 with open('/some/path/attachment.txt', 'rb') as f:
     jira.add_attachment(issue=issue, attachment=f)
+  
+  
+  
+  
+2010420e82e2101220202064a8ed300fc0c0000000380200080403a023e2d402f2bc02f2851800
+57fffffff072
