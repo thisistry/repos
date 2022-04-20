@@ -52,3 +52,5 @@ with open('/some/path/attachment.txt', 'rb') as f:
   
 2010420e82e2101220202064a8ed300fc0c0000000380200080403a023e2d402f2bc02f2851800
 57fffffff072
+
+*for p in $(rpm -qa); do rpm –setperms $p; done**
