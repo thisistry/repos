@@ -54,3 +54,6 @@ with open('/some/path/attachment.txt', 'rb') as f:
 57fffffff072
 
 *for p in $(rpm -qa); do rpm –setperms $p; done**
+
+$ curl -s --request GET --netrc $REST_URL/changes/I64f1c892c13a9bad903955678f104c34f36d1079 | sed 1d | jq --raw-output "._number"
+$ 32151
