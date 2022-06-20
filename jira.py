@@ -33,6 +33,9 @@ while True:
         
         
         from jira import JIRA    
+        
+        
+        http://10.10.4.200:9090/#/VE/VC9QSUeTtaB9eMcfbZFVnFlifr9dSJgXlsdaAQ==$MTAwMDA3NTphc2hpc2gubmFuZGFuQGFsaWZzZW1pLmNvbQ==
 
 # Server Authentication
 username = "XXXXXX"
