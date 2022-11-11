@@ -1,3 +1,5 @@
+1. Check in bashrc
+
 # enable bash completion in interactive shells
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
@@ -9,4 +11,11 @@ fi
 
 
 
-sudo apt install --reinstall bash-completio
+2. sudo apt install --reinstall bash-completion
+
+#This Worked
+3. https://askubuntu.com/questions/545540/terminal-autocomplete-doesnt-work-properly
+Open Application Menu > Settings > Window Manager.
+Click on 'Keyboard' tab.
+Clear the 'Switch window for same application' setting. => Clear
+
