@@ -84,3 +84,44 @@ except Exception as e:
     print(e)
 finally:
     server.quit()
+
+    
+    
+    toaddr = 'buffy@sunnydale.k12.ca.us'
+cc = ['alexander@sunydale.k12.ca.us','willow@sunnydale.k12.ca.us']
+bcc = ['chairman@slayerscouncil.uk']
+fromaddr = 'giles@sunnydale.k12.ca.us'
+message_subject = "disturbance in sector 7"
+message_text = "Three are dead in an attack in the sewers below sector 7."
+message = "From: %s\r\n" % fromaddr
+        + "To: %s\r\n" % toaddr
+        + "CC: %s\r\n" % ",".join(cc)
+        + "Subject: %s\r\n" % message_subject
+        + "\r\n" 
+        + message_text
+toaddrs = [toaddr] + cc + bcc
+server = smtplib.SMTP('smtp.sunnydale.k12.ca.us')
+server.set_debuglevel(1)
+server.sendmail(fromaddr, toaddrs, message)
+server.quit()
+
+
+
+
+import smtplib
+from email.mime.multipart import MIMEMultipart
+
+me = "user63503@gmail.com"
+to = "someone@gmail.com"
+cc = "anotherperson@gmail.com,someone@yahoo.com"
+bcc = "bccperson1@gmail.com,bccperson2@yahoo.com"
+
+rcpt = cc.split(",") + bcc.split(",") + [to]
+msg = MIMEMultipart('alternative')
+msg['Subject'] = "my subject"
+msg['To'] = to
+msg['Cc'] = cc
+msg.attach(my_msg_body)
+server = smtplib.SMTP("localhost") # or your smtp server
+server.sendmail(me, rcpt, msg.as_string())
+server.quit()
